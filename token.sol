@@ -26,10 +26,6 @@ contract MyToken {
     mapping(address => uint256) public balances;
 
 
-    function get() external view returns (string memory, string memory) {
-        return (tokenName, tokenSymbol);
-    }
-
     // Mint Function
 
     function mint(address _to, uint256 _value) external {
