@@ -13,45 +13,30 @@ The "Token" smart contract provides the framework for a custom token with the ca
 pragma solidity 0.8.18;
 
 contract MyToken {
-    string public tokenName = "Aditi";
-    string public tokenSymbol = "abc";
-    uint256 public totalSupply;
+
+    // Variables
+    string public tokenName="Aditi";
+    string public tokenSymbol="abc";
+    uint256 public totalSupply=0;
+
+    // Mapping
     mapping(address => uint256) public balances;
 
-    event Transfer(address indexed from, address indexed to, uint256 value);
-
-    constructor() {
-        totalSupply = 0;
-    }
+    // Mint Function
 
     function mint(address _to, uint256 _value) external {
         require(_to != address(0), "Invalid address");
         totalSupply += _value;
         balances[_to] += _value;
-        emit Transfer(address(0), _to, _value);
     }
 
+    // Burn Function
     function burn(uint256 _value) external {
         require(balances[msg.sender] >= _value, "Insufficient balance");
         totalSupply -= _value;
         balances[msg.sender] -= _value;
-        emit Transfer(msg.sender, address(0), _value);
     }
 
-    function transfer(address _to, uint256 _value) external returns (bool) {
-        require(_to != address(0), "Invalid address");
-        require(balances[msg.sender] >= _value, "Insufficient balance");
-
-        balances[msg.sender] -= _value;
-        balances[_to] += _value;
-
-        emit Transfer(msg.sender, _to, _value);
-        return true;
-    }
-
-    function getInfo() external view returns (string memory, string memory) {
-        return (tokenName, tokenSymbol);
-    }
 }
 ```
 
@@ -66,8 +51,6 @@ The constructor function of the contract is executed only once during contract d
 The mint function allows the contract owner (or anyone with permission) to create new tokens and assign them to a specified address. It checks for a valid recipient address and then increases the total supply and updates the balance of the recipient accordingly. It also emits a Transfer event to log the creation of new tokens.
 
 The burn function enables token holders to destroy their own tokens, reducing the total supply. It verifies that the caller has a sufficient token balance before allowing the burn operation. The function then deducts the burned tokens from the caller's balance, updates the total supply accordingly, and emits a Transfer event to log the destruction of tokens.
-
-The transfer function facilitates the transfer of tokens between addresses. It ensures that the recipient address is valid and that the sender has enough tokens to transfer. If these conditions are met, it updates the balances of both the sender and the recipient and logs the transfer using the Transfer event.
 
 Lastly, the getInfo function is a read-only function that allows anyone to retrieve the name and symbol of the token without making any state changes. It returns the tokenName and tokenSymbol as strings.
 
